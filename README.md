@@ -72,7 +72,12 @@ To become a backend developer by mastering:
 
 ## 🧠 Mini Projects
 
-- Student Management System (Day 10)
+### Student Management System
+- Built using JavaScript functions
+- Implements CRUD operations (Create, Read, Update, Delete)
+- Uses array-based data handling
+- Simulates backend-style logic
+- Located in `mini-projects/student-management-system`
 
 ---
 
