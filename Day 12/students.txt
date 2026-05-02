@@ -1,0 +1,7 @@
+Name,Marks
+Sujan,91
+Suprina,56 
+Subash,23
+Susan,49
+Narayan,76
+Gandu,46
