@@ -1,62 +1,37 @@
-let students = [
-    {id: 1, name: "Sujan", marks: 91},
-    { id: 2, name: "Ram", marks: 45 },
-    { id: 3, name: "Shyam", marks: 67 },
-    { id: 4, name: "Hari", marks: 30 }
 
-];
+//Functions
+const fs = require('fs');
 
-function getAllStudents(){
-    return students;
+function getStudents(){
+    const data = fs.readFileSync('students.txt','utf-8');
+    if (!data) return[];
+    
+    return data.trim().split('\n');
 }
-let nextID = students.length + 1;
+
 function addStudent(name,marks){
-    let newStudent = {
-        id: nextID++ ,
-        name,
-        marks
-    };
-    students.push(newStudent);
+    fs.appendFileSync('students.txt', `${name},${marks}\n`);
 }
 
-function getPassedStudents(){
-    return students.filter(student => student.marks >=40);
+function showallStudents(){
+    console.log("Data inside the file: ");
+    console.log(fs.readFileSync('students.txt','utf-8'));
 }
 
-function getHighscorer(){
-    return students.reduce((max, student) =>
-        student.marks > max.marks ? student : max, students[0]
-    );
-}
-
-function deleteStudent(id){
-    students = students.filter(student => student.id !==id);
-}
-
-function updateStudent(id,newMarks){
-    for (let i = 0; i < students.length; i++){
-        if (id === students[i].id){
-            students[i].marks = newMarks;
-        }
-    }
+function deleteStudents(name){
+    let students = getStudents(); //array 
+    let updatedStudents = students.filter(student => {
+        let [studentName] = student.split(',');
+        return studentName !== name;
+    });
+    fs.writeFileSync('students.txt',updatedStudents.join('\n'));
 }
 
 
-console.log("All Students: ",getAllStudents());
-addStudent("Bikash", 53);
-console.log("Passed Students: ",getPassedStudents());
-console.log("Topper: ",getHighscorer());
-addStudent("Susan", 41);
-deleteStudent(3);
-addStudent("Suprina", 56);
-deleteStudent(2);
-updateStudent(5,35);
-console.log("New list of students: ",getAllStudents());
+//Tests
 
-
-updateStudent(1, 100);
-deleteStudent(5);
-updateStudent(5, 80);
-updateStudent(4, 50);
-updateStudent(4, 60);
-console.log(getAllStudents());
+addStudent("Gandu",46);
+showallStudents();
+deleteStudents("Gandu");
+console.log("After deletion");
+showallStudents();
