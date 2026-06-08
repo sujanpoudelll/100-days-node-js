@@ -1,8 +1,5 @@
-
-
-// Extracting specific function present in other file that is imported
-const {validateStudent} = require('../utils/validateStudent'); 
 const Student = require('../model/studentModel'); //Importing student model
+const AppError = require('../utils/AppError');
 
 
 //http GET request 
@@ -67,9 +64,7 @@ const getStudentById = async(req, res, next) => {
     try{
         const student = await Student.findById(req.params.id); //fetches specific data i.e by id
             if(!student){
-                const error = new Error("Student not found !");
-                error.statusCode = 404;
-                throw error;
+                throw new AppError("Student not found",404);
             }
 
             res.status(200).json({
@@ -115,9 +110,7 @@ const updateStudent = async(req, res, next) => {
         );
 
         if(!student){
-            const error = new Error("Student not found !");
-            error.statusCode = 404;
-            throw error;
+            throw new AppError("Student not found",404);
         }
         res.status(200).json({
         success: true,
@@ -137,9 +130,7 @@ const deleteStudent = async(req, res, next) => {
         const student = await Student.findByIdAndDelete(req.params.id);  // Deletes through id 
 
         if(!student){
-            const error = new Error("Student not found !");
-            error.statusCode = 404; 
-            throw error;
+            throw new AppError("Student not found",404);
         }
         res.status(200).json({
         success: true,

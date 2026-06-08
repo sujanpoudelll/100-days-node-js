@@ -7,18 +7,14 @@ const protect = (req, res, next) => {
         const authHeader = req.headers.authorization;
 
         if (!authHeader) {
-            const error = new Error("No token provided");
-            error.statusCode = 401;
-            throw error;
+            throw new AppError("No token provided",401);
         }
 
         // 2. format: Bearer TOKEN
         const token = authHeader.split(" ")[1];
 
         if (!token) {
-            const error = new Error("Invalid token format");
-            error.statusCode = 401;
-            throw error;
+            throw new AppError("Invalid token format",401);
         }
 
         // 3. verify token

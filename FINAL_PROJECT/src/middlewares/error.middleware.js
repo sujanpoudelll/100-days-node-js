@@ -1,10 +1,11 @@
-const errorHandler = (err, req, res, next) => { // error handling middleware should have 4 parameters
-    console.error(err.stack); // prints entire details of error origination
+const errorHandler = (err,req,res,next)=>{
+    const statusCode = err.statusCode || 500;
 
-    res.status(err.statusCode || 500).json({ //status changes if explicitly passed from controller
-        success: false,
-        message: err.message || "Internal Server Error"
+    res.status(statusCode).json({
+        success:false,
+        message: err.message || "Internal Server Error",
+        statusCode
     });
 };
 
-module.exports = errorHandler; // exporting the module so other files can use it 
+module.exports = errorHandler;
