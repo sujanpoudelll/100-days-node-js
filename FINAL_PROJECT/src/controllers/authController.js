@@ -3,9 +3,18 @@ const jwt = require('jsonwebtoken'); //A library used to generate unique, encryp
 
 const User = require('../model/userModel'); //importing the userModel schema 
 
+const {registerSchema,loginSchema} = require('../validators/authValidator');
+
 const registerUser = async(req, res, next) => { // User registraion handling function
     try{
         const {name, email, password, role} = req.body;
+        const result = registerSchema.safeParse(req.body);
+        if(!result.success){
+            const error = new Error(result.error.issues.map(i => i.message).join(", "));
+            error.statusCode = 400;
+            throw error;
+        }
+        
 
         //Check if user exists 
         const existingUser = await User.findOne({email});
@@ -39,6 +48,12 @@ const registerUser = async(req, res, next) => { // User registraion handling fun
 const loginUser = async(req, res, next) => { // User login function
     try{
         const {email, password} = req.body;
+        const result = loginSchema.safeParse(req.body);
+       if(!result.success){
+            const error = new Error(result.error.issues.map(i => i.message).join(", "));
+            error.statusCode = 400;
+            throw error;
+        }
 
         //Check if user exists
         const user = await User.findOne({email}); //looks for user with req email

@@ -2,7 +2,7 @@
 
 // Extracting specific function present in other file that is imported
 const {validateStudent} = require('../utils/validateStudent'); 
-const Student = require('../model/studentModel') //Importing student model
+const Student = require('../model/studentModel'); //Importing student model
 
 
 //http GET request 
@@ -28,8 +28,7 @@ const getAllStudents = async(req, res, next) =>{
         if(minMarks){
             query = query.find({
                 marks: { $gte: (minMarks)}
-            })
-
+            });
         }
 
         //Sorting
@@ -46,7 +45,7 @@ const getAllStudents = async(req, res, next) =>{
 
 
 
-        const students = await query; //looks for query and fetches data he query chain is complete. 
+        const students = await query; //looks for query and fetches data if query chain is complete. 
         // Compile all our filters, sorting rules, and pagination constraints, send it to MongoDB, and wait for the results array."
 
         //Final response
@@ -66,7 +65,7 @@ const getAllStudents = async(req, res, next) =>{
 //http GET request for specific data
 const getStudentById = async(req, res, next) => {
     try{
-        const student = await Student.findById(req.params.id) //fetches specific data i.e by id
+        const student = await Student.findById(req.params.id); //fetches specific data i.e by id
             if(!student){
                 const error = new Error("Student not found !");
                 error.statusCode = 404;
