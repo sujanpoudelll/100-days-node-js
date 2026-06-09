@@ -1,14 +1,13 @@
 const Student = require('../model/studentModel'); //Importing student model
 const AppError = require('../utils/AppError');
+const asyncHandler = require('../utils/asyncHandler');
 
 
 //http GET request 
 //route handler function is assigned to constant , req is incoming req from user and res is response from server to user
-const getAllStudents = async(req, res, next) =>{
+const getAllStudents = asyncHandler(async(req, res, next) =>{
     //async is for asynchronous database operations and allows to use awaits
 
-    // try block for operations
-    try{
 
         const {name, minMarks, sort, page, limit} = req.query;
 
@@ -52,16 +51,13 @@ const getAllStudents = async(req, res, next) =>{
             data: students
         });  
 
-    //if anything wrong in try it goes to catch block   
-    } catch(error){ //error is caught and stored in variable named error
-        next(error); // skips all routes and and handles this error to error handling middleware immediately 
-
-    };
-}
+    
+   
+});
 
 //http GET request for specific data
-const getStudentById = async(req, res, next) => {
-    try{
+const getStudentById = asyncHandler(async(req, res, next) => {
+    
         const student = await Student.findById(req.params.id); //fetches specific data i.e by id
             if(!student){
                 throw new AppError("Student not found",404);
@@ -72,16 +68,13 @@ const getStudentById = async(req, res, next) => {
                     data: student
             }); 
 
-        } catch(error){
-            next(error);  //passes error to middleware
-        }
-    };
+    });
 
 
 //http POST request
-const addStudent = async(req, res, next) => {
+const addStudent = asyncHandler(async(req, res, next) => {
 
-    try{
+    
         const {name, marks} = req.body;
         const newStudent = await Student.create({        // creates new data with given key
             name, marks
@@ -93,16 +86,12 @@ const addStudent = async(req, res, next) => {
         data: newStudent
         });
 
-    } catch(error){
-        next(error);
-    }
-
-};
+});
 
     
 //http PUT request
-const updateStudent = async(req, res, next) => {
-    try{
+const updateStudent = asyncHandler(async(req, res, next) => {
+    
         const student = await Student.findByIdAndUpdate(         // finds data using id, changes the required field only , set us upated data by validating it
             req.params.id,
             req.body,
@@ -117,16 +106,14 @@ const updateStudent = async(req, res, next) => {
         message: " Student updated successfully !", 
         data: student  
     });
-    } catch (error){
-        next(error);
-    }
-};
+   
+});
 
 
 //http DELETE request
-const deleteStudent = async(req, res, next) => {
+const deleteStudent = asyncHandler(async(req, res, next) => {
 
-    try{
+  
         const student = await Student.findByIdAndDelete(req.params.id);  // Deletes through id 
 
         if(!student){
@@ -137,10 +124,8 @@ const deleteStudent = async(req, res, next) => {
         message: "Student deleted successfully !"
     }); 
 
-    } catch(error){
-        next(error);
-    }
-};
+    
+});
 
 module.exports = {
     getAllStudents,

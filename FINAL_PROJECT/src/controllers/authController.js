@@ -5,10 +5,10 @@ const User = require('../model/userModel'); //importing the userModel schema
 
 const {registerSchema,loginSchema} = require('../validators/authValidator');
 const AppError = require('../utils/appError');
+const asyncHandler = require('../utils/asyncHandler');
 
+const registerUser = asyncHandler(async(req, res, next) => { // User registraion handling function
 
-const registerUser = async(req, res, next) => { // User registraion handling function
-    try{
         const {name, email, password, role} = req.body;
         const result = registerSchema.safeParse(req.body);
         if(!result.success){
@@ -37,15 +37,11 @@ const registerUser = async(req, res, next) => { // User registraion handling fun
             message: "User registered successfully !"
 
         });
-    }
-    catch(error){
-        next(error);
-      }
+    
+});
 
-}
-
-const loginUser = async(req, res, next) => { // User login function
-    try{
+const loginUser = asyncHandler(async(req, res, next) => { // User login function
+    
         const {email, password} = req.body;
         const result = loginSchema.safeParse(req.body);
        if(!result.success){
@@ -82,12 +78,8 @@ const loginUser = async(req, res, next) => { // User login function
             token
 
         });
-    }
-    catch(error){
-        next(error);
-      }
-
-}
+    
+});
 
 module.exports = {
     registerUser,
