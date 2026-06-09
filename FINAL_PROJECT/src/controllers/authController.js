@@ -1,10 +1,10 @@
 const bcrypt = require('bcryptjs'); //A library used to securely hash and store passwords
 const jwt = require('jsonwebtoken'); //A library used to generate unique, encrypted digital tokens
+const AppError = require('../utils/appError');
 
 const User = require('../model/userModel'); //importing the userModel schema 
 
 const {registerSchema,loginSchema} = require('../validators/authValidator');
-const AppError = require('../utils/appError');
 const asyncHandler = require('../utils/asyncHandler');
 
 const registerUser = asyncHandler(async(req, res, next) => { // User registraion handling function

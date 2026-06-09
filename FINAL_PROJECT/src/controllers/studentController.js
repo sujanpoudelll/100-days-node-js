@@ -1,47 +1,21 @@
 const Student = require('../model/studentModel'); //Importing student model
 const AppError = require('../utils/AppError');
 const asyncHandler = require('../utils/asyncHandler');
+const APIFeatures = require('../utils/apiFeatures');
 
 
 //http GET request 
 //route handler function is assigned to constant , req is incoming req from user and res is response from server to user
 const getAllStudents = asyncHandler(async(req, res, next) =>{
+
     //async is for asynchronous database operations and allows to use awaits
 
+        const features = new APIFeatures(Student.find(), req.body)
+        .filter()
+        .sort()
+        .paginate();
 
-        const {name, minMarks, sort, page, limit} = req.query;
-
-        let query = Student.find(); //finds students based on query
-
-        //Filter: name search
-        if(name){
-            query = query.find({
-                name: { $regex: name, $options: "i" } 
-        });
-
-        }
-        //Filter: marks
-        if(minMarks){
-            query = query.find({
-                marks: { $gte: (minMarks)}
-            });
-        }
-
-        //Sorting
-        if(sort){
-            query = query.sort(sort);
-        }
-
-        //Pagination
-        const pageNumber = Number(page) || 1; //page number to be viewed, default is 1
-        const limitNumber = Number(limit) || 5; // items in page limit , default is 5
-
-        const skip = (pageNumber - 1)* limitNumber; //items up to no. to be skipped in that page from start
-        query = query.skip(skip).limit(limitNumber); // query executed based on above data 
-
-
-
-        const students = await query; //looks for query and fetches data if query chain is complete. 
+        const students = await features.query; //looks for query and fetches data if query chain is complete. 
         // Compile all our filters, sorting rules, and pagination constraints, send it to MongoDB, and wait for the results array."
 
         //Final response
