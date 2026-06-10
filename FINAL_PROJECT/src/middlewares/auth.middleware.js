@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const AppError = require('../utils/AppError');
+const config = require('../config/config');
 
 const protect = (req, res, next) => {
     try {
@@ -19,7 +20,7 @@ const protect = (req, res, next) => {
         }
 
         // 3. verify token
-        const decoded = jwt.verify(token,  process.env.JWT_SECRET);
+        const decoded = jwt.verify(token,  config.jwtSecret);
 
         // 4. attach user to request
         req.user = decoded;
@@ -32,3 +33,4 @@ const protect = (req, res, next) => {
 };
 
 module.exports = protect;
+

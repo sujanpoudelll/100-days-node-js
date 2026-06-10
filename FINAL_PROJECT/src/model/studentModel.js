@@ -18,3 +18,4 @@ const studentSchema = new mongoose.Schema({
 });
 
 module.exports = mongoose.model('Student', studentSchema); // exporting this model for the use in other files
+

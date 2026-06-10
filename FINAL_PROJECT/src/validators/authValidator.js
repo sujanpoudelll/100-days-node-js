@@ -14,3 +14,4 @@ const loginSchema = z.object({
 });
 
 module.exports = {registerSchema,loginSchema};
+

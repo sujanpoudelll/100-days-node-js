@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs'); //A library used to securely hash and store passwords
 const jwt = require('jsonwebtoken'); //A library used to generate unique, encrypted digital tokens
 const AppError = require('../utils/appError');
+const config = require('../config/config');
 
 const User = require('../model/userModel'); //importing the userModel schema 
 
@@ -68,7 +69,7 @@ const loginUser = asyncHandler(async(req, res, next) => { // User login function
         //Generate JWT token
         const token = await jwt.sign( //construct and encrypt token taking 3 major arguments
             {id: user.id, email: user.email, role: user.role}, //Payload for embedding public data
-            process.env.JWT_SECRET, //Secret key for encryption
+            config.jwtSecret, //Secret key for encryption
             {expiresIn: "1d"} //Config options for seting lifespan of token
         );
 
@@ -85,3 +86,4 @@ module.exports = {
     registerUser,
     loginUser
 };
+
