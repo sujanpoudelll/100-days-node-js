@@ -22,7 +22,7 @@ const registerUser = asyncHandler(async(req, res, next) => { // User registraion
         const existingUser = await User.findOne({email});
 
         if(existingUser){
-            throw new AppError("User already exists",400);
+            throw new AppError("Email already exists",400);
         }
 
         //hashed password
