@@ -1,34 +1,49 @@
 const jwt = require('jsonwebtoken');
 const AppError = require('../utils/AppError');
 const config = require('../config/config');
+const User = require('../model/userModel');
 
-const protect = (req, res, next) => {
+const protect = async(req, res, next) => {
     try {
+        let token;
 
-        // 1. get token from header
-        const authHeader = req.headers.authorization;
-
-        if (!authHeader) {
-            throw new AppError("No token provided",401);
+        //1. Check token exists
+        if(
+            req.headers.authorization &&
+            req.headers.authorization.startsWith('Bearer')
+        ){
+            token = req.headers.authorization.split(' ')[1];
+        }
+        if(!token){
+            throw next(new AppError("No token provided",401));
         }
 
-        // 2. format: Bearer TOKEN
-        const token = authHeader.split(" ")[1];
+        //2.Verify Token
+        const decoded = jwt.verify(token, config.jwtSecret);
 
-        if (!token) {
-            throw new AppError("Invalid token format",401);
+        //3.Check user exists
+        const currentUser = await User.findById(decoded.id);
+
+        if(!currentUser){
+            return next(new AppError("User no longer exists",401));
         }
 
-        // 3. verify token
-        const decoded = jwt.verify(token,  config.jwtSecret);
-
-        // 4. attach user to request
-        req.user = decoded;
+        //4. Attach user to request
+        req.user = currentUser;
 
         next();
 
+
     } catch (error) {
+        //Handle JWT errors properly
+        if(error.name === 'JsonWebTokenError'){
+            return next(new AppError('Invalid token', 401));
+        }
+        if(error.name === 'TokenExpiredError'){
+            return next(new AppError('Token Expired', 401));
+        }
         next(error);
+        
     }
 };
 
