@@ -1,9 +1,11 @@
 const express = require('express');
 const app = express();
 
+const config = require('./config/config')
 const helmet = require('helmet');
 const cors = require('cors');
 const rateLimit = require('express-rate-limit');
+const morgan = require('morgan');
 
 app.use(helmet());
 
@@ -13,13 +15,16 @@ app.use(cors({
 
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000,
-    max: 5,
+    max: 100,
     message: "Too many requests, try again later"
 });
 app.use(limiter);
 
 app.use(express.json());
 
+if(config.nodeEnv === "development"){
+    app.use(morgan('dev'));
+};
 
 
 // routes
