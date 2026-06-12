@@ -30,7 +30,7 @@ const config = require('../config/config');
 
     const login = async(data) =>{
 
-        const {email, password} = req.body;
+        const {email, password} = data;
 
         //Check if user exists
         const user = await User.findOne({email}); //looks for user with req email

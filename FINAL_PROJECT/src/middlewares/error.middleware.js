@@ -1,18 +1,21 @@
 const errorHandler = (err,req,res,next)=>{
     const statusCode = err.statusCode || 500;
+    const message= err.message || "Server Error" ;
 
     if(err.name === "CastError"){
-        err.message = "Invalid ID format";
-        err.statusCode = 400;
+        statusCode = 400;
+        message = "Invalid ID format";
+        
     }
     if(err.code === 11000){
-        err.message = "Resource already exists";
-        err.statusCode = 400;
+        statusCode = 400;
+        message = "Resource already exists";
+        
     }
     res.status(statusCode).json({
         success:false,
-        message: err.message || "Server Error",
-        statusCode: err.statusCode || 500,
+        statusCode,
+        message,
         timestamp: new Date().toISOString()
     });
 };
