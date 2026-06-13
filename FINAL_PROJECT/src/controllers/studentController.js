@@ -13,6 +13,8 @@ const getAllStudents = asyncHandler(async(req, res, next) =>{
 
         const features = new APIFeatures(Student.find(), req.query)
         .filter()
+        .search()
+        .build()
         .sort()
         .paginate();
 

@@ -20,6 +20,8 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 
+app.set('query parser', 'extended');
+
 app.use(express.json());
 
 if(config.nodeEnv === "development"){

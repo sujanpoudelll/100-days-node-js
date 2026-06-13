@@ -2,22 +2,49 @@ class APIFeatures {
     constructor(query, queryString){
         this.query = query;
         this.queryString = queryString;
+        this.mongoQuery = {};
     }
 
     //Filtering
     filter() {
+        
         const queryObj = {...this.queryString};
-        const excludedFields = ['sort','page','limit'];
+        const excludedFields = ['sort','page','limit','keyword'];
         excludedFields.forEach(el => delete queryObj[el]);
 
         //conver to mongoDB format
         let queryStr = JSON.stringify(queryObj);
-        queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, match => `${match}`);
+        queryStr = queryStr.replace(
+            /\b(gte|gt|lte|lt)\b/g, 
+            match => `$${match}`
+        );
 
-        this.query = this.query.find(JSON.parse(queryStr));
+        this.mongoQuery = {
+            ...this.mongoQuery,
+            ...JSON.parse(queryStr)
+        };
+
+        console.log("REQ QUERY:", this.queryString);
+        console.log("PARSED QUERY:", JSON.parse(queryStr));
 
         return this;
+    }
 
+    //Search
+    search() {
+        if(this.queryString.keyword){
+            this.mongoQuery.name ={
+                $regex: this.queryString.keyword,
+                $options: "i"
+            };
+        }
+        return this;
+    }
+
+    //Apply query once
+    build(){
+        this.query = this.query.find(this.mongoQuery);
+        return this;
     }
 
     //Sorting
@@ -26,7 +53,7 @@ class APIFeatures {
             const sortBy = this.queryString.sort.split(',').join(' ');
             this.query = this.query.sort(sortBy);
         } else {
-            this.query = this.query.sort('-createdAt');
+            this.query = this.query.sort('_id');
         }
         return this;
     }
