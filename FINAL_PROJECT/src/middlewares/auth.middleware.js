@@ -15,7 +15,7 @@ const protect = async(req, res, next) => {
             token = req.headers.authorization.split(' ')[1];
         }
         if(!token){
-            throw next(new AppError("No token provided",401));
+            return next(new AppError("Not logged in",401));
         }
 
         //2.Verify Token

@@ -3,7 +3,6 @@ const router = express.Router(); // Create an isolated Express router instance
 
 const studentController = require('../controllers/studentController'); // Import the custom controller file to handle logics
 const protect = require('../middlewares/auth.middleware');
-const authorize = require('../middlewares/role.middleware');
 const restricTo = require('../middlewares/role.middleware');
 
 // Define HTTP routes and map them to controller actions
