@@ -48,12 +48,20 @@ const config = require('../config/config');
         }
 
         //Generate JWT token
-        const token = await jwt.sign( //construct and encrypt token taking 3 major arguments
+        const accessToken = await jwt.sign( //construct and encrypt token taking 3 major arguments
             {id: user.id, email: user.email, role: user.role}, //Payload for embedding public data
             config.jwtSecret, //Secret key for encryption
-            {expiresIn: "1d"} //Config options for seting lifespan of token
+            {expiresIn: "1h"} //Config options for seting lifespan of token
         );
-        return token
+
+        const refreshToken = await jwt.sign(
+            {
+                id: user._id
+            },
+            config.jwtRefreshSecret,
+            {expiresIn: "1d"}
+        );
+        return {accessToken,refreshToken}
     }
 
     module.exports = {register,login};
