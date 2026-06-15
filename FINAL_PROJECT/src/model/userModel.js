@@ -20,6 +20,10 @@ const userSchema = new mongoose.Schema(
         enum: ['user', 'admin','manager'],
         default: 'user'
     },
+    permissions: {
+        type: [String],
+        default: []
+    },
     refreshToken: {              
         type: String,
         default: null

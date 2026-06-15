@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 const AppError = require('../utils/AppError');
 const config = require('../config/config');
 const User = require('../model/userModel');
+const getPermissionsByRole = require('../utils/permission');
 
 const protect = async(req, res, next) => {
     try {
@@ -29,7 +30,10 @@ const protect = async(req, res, next) => {
         }
 
         //4. Attach user to request
-        req.user = currentUser;
+        req.user = {
+            ...currentUser._doc,
+            permissions: getPermissionsByRole(currentUser.role)
+};
 
         next();
 
