@@ -5,6 +5,7 @@ const authService = require('../services/authService');
 const apiResponse = require('../utils/apiResponse');
 const jwt = require('jsonwebtoken');
 const config = require('../config/config');
+const User = require('../model/userModel');
 
 const registerUser = asyncHandler(async(req, res, next) => { // User registraion handling function
 
@@ -30,8 +31,14 @@ const refreshAccessToken = asyncHandler(async (req, res, next) => {
     try {
         const decoded = jwt.verify(refreshToken, config.jwtRefreshSecret);
 
+        const user = await User.findById(decoded.id);
+
+        if (!user || user.refreshToken !== refreshToken) {
+            return next(new AppError("Invalid refresh token", 401));
+        }
+
         const newAccessToken = jwt.sign(
-            { id: decoded.id },
+            { id: decoded.id, role: user.role },
             config.jwtSecret,
             { expiresIn: '1h' }
         );
@@ -45,10 +52,26 @@ const refreshAccessToken = asyncHandler(async (req, res, next) => {
     }
 });
 
+const logoutUser = asyncHandler(async (req, res, next) => {
+
+    const user = await User.findById(req.user.id);
+
+    if (!user) {
+        return next(new AppError("User not found", 404));
+    }
+
+    // remove refresh token
+    user.refreshToken = null;
+    await user.save();
+
+    return apiResponse(res, 200, "Logged out successfully", null);
+});
+
 
 module.exports = {
     registerUser,
     loginUser,
-    refreshAccessToken
+    refreshAccessToken,
+    logoutUser
 };
 

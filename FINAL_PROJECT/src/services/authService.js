@@ -61,7 +61,13 @@ const config = require('../config/config');
             config.jwtRefreshSecret,
             {expiresIn: "1d"}
         );
+
+        user.refreshToken = refreshToken;
+        await user.save();
+        
         return {accessToken,refreshToken}
+
+        
     }
 
     module.exports = {register,login};
